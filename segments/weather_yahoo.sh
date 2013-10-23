@@ -5,7 +5,7 @@
 # 1. Go to Yahoo weather http://weather.yahoo.com/
 # 2. Find the weather for you location
 # 3. Copy the last numbers in that URL. e.g. "http://weather.yahoo.com/united-states/california/newport-beach-12796587/" has the number "12796587"
-location="12796587"
+location="12784287"
 
 # Can be any of {c,f,k}.
 unit="f"
@@ -14,7 +14,7 @@ unit="f"
 update_period=600
 
 # Cache file.
-tmp_file="${tp_tmpdir}/weather_yahoo.txt"
+tmp_file="/tmp/tmux-powerline/weather_yahoo.txt"
 
 # Get symbol for condition. Available conditions: http://developer.yahoo.com/weather/#codes
 get_condition_symbol() {
@@ -30,11 +30,11 @@ get_condition_symbol() {
             echo "☼"
         fi
         ;;
-    "rain" | "mixed rain and snow" | "mixed rain and sleet" | "freezing drizzle" | "drizzle" | "freezing rain" | "showers" | "mixed rain and hail" | "scattered showers" | "isolated thundershowers" | "thundershowers")
+    "rain" | "mixed rain and snow" | "mixed rain and sleet" | "freezing drizzle" | "drizzle" | "freezing rain" | "showers" | "mixed rain and hail" | "scattered showers" | "isolated thundershowers" | "thundershowers" | "light rain")
             #echo "☂"
             echo "☔"
         ;;
-    "snow" | "mixed snow and sleet" | "snow flurries" | "light snow showers" | "blowing snow" | "sleet" | "hail" | "heavy snow" | "scattered snow showers" | "snow showers")
+    "snow" | "mixed snow and sleet" | "snow flurries" | "snow/freezing rain"  | "light snow showers" | "blowing snow" | "sleet" | "hail" | "heavy snow" | "light snow" | "scattered snow showers" | "snow showers")
             #echo "☃"
             echo "❅"
         ;;
@@ -45,12 +45,12 @@ get_condition_symbol() {
             #echo "⚡"
             echo "☈"
         ;;
-    "dust" | "foggy" | "fog" | "haze" | "smoky" | "blustery" | "mist")
+    "dust" | "foggy" | "fog" | "haze" | "smoky" | "blustery" | "mist" | "light drizzle")
         #echo "♨"
         #echo "﹌"
         echo "〰"
         ;;
-    "windy")
+    "windy" | "cloudy/windy")
         #echo "⚐"
         echo "⚑"
         ;;
@@ -100,8 +100,8 @@ if [ -z "$degree" ]; then
             exit 1
         fi
 # <yweather:units temperature="F" distance="mi" pressure="in" speed="mph"/>
-    unit=$(echo "$weather_data" | grep -PZo "<yweather:units [^<>]*/>" | sed 's/.*temperature="\([^"]*\)".*/\1/')
-    condition=$(echo "$weather_data" | grep -PZo "<yweather:condition [^<>]*/>")
+    unit=$(echo "$weather_data" | grep -Zo "<yweather:units [^<>]*/>" | sed 's/.*temperature="\([^"]*\)".*/\1/')
+    condition=$(echo "$weather_data" | grep -Zo "<yweather:condition [^<>]*/>")
 # <yweather:condition  text="Clear"  code="31"  temp="66"  date="Mon, 01 Oct 2012 8:00 pm CST" />
     degree=$(echo "$condition" | sed 's/.*temp="\([^"]*\)".*/\1/')
     condition=$(echo "$condition" | sed 's/.*text="\([^"]*\)".*/\1/')
